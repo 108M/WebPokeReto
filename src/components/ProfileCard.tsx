@@ -7,53 +7,41 @@ import type { UserProfile, AppEvent } from '../App';
 interface ProfileCardProps {
     profile: UserProfile;
     isLeading: boolean;
-    onUpdateProfile: (updatedProfile: UserProfile) => void;
+    onToggleMedal: (profileId: string, badgeIndex: number, currentObtained: boolean) => void;
+    onAddEvent: (profileId: string, newEvent: Omit<AppEvent, 'id'>, currentPoints: number) => void;
+    onDeleteEvent: (profileId: string, eventId: string, pointsToRevert: number, currentPoints: number) => void;
 }
 
-export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, isLeading, onUpdateProfile }) => {
+export const ProfileCard: React.FC<ProfileCardProps> = ({
+    profile,
+    isLeading,
+    onToggleMedal,
+    onAddEvent,
+    onDeleteEvent
+}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
     const handleEventSubmit = (eventDetails: any) => {
-        console.log("Event submitted for", profile.name, eventDetails);
-        // TODO: Connect to Supabase
+        onAddEvent(profile.id, {
+            type: eventDetails.type,
+            desc: eventDetails.description,
+            points: eventDetails.points,
+            date: new Date().toISOString().split('T')[0]
+        }, profile.points);
     };
 
     const toggleMedal = (idx: number) => {
-        const newMedals = [...profile.medals];
-        newMedals[idx] = { ...newMedals[idx], obtained: !newMedals[idx].obtained };
-        onUpdateProfile({ ...profile, medals: newMedals });
-    };
-
-    const removeEffect = (effectId: string) => {
-        onUpdateProfile({
-            ...profile,
-            activeEffects: profile.activeEffects.filter(e => e.id !== effectId)
-        });
-    };
-
-    const addEffect = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        const label = window.prompt("Nombre de la ventaja/desventaja (ej: +2 Niveles):");
-        if (!label) return;
-
-        const isBad = label.toLowerCase().includes('menos') || label.includes('-');
-        const color = isBad ? '#ef4444' : '#22c55e'; // red or green
-
-        onUpdateProfile({
-            ...profile,
-            activeEffects: [
-                ...profile.activeEffects,
-                { id: Date.now().toString(), label, color }
-            ]
-        });
+        onToggleMedal(profile.id, idx, profile.medals[idx].obtained);
     };
 
     return (
         <>
             <motion.div
+                layout
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
+                transition={{ layout: { type: "spring", stiffness: 300, damping: 30 } }}
                 className={`relative w-full p-4 mb-4 ${isLeading ? 'gba-panel' : 'gba-panel-dark'}`}
             >
                 <div className="flex flex-row justify-between items-center mb-2">
@@ -71,31 +59,28 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, isLeading, on
                             <h3 className="text-3xl gba-text">{profile.name} {isLeading && '👑'}</h3>
                             <p className="text-xl gba-text text-[#306082]">{profile.points} PTS</p>
 
-                            {/* Active Effects Display */}
+                            {/* Active Effects / Ventajas Display */}
                             <div className="flex gap-2 mt-2 flex-wrap items-center">
-                                {profile.activeEffects && profile.activeEffects.map(effect => (
-                                    <div
-                                        key={effect.id}
-                                        className="px-2 py-1 text-xs font-bold text-white rounded border border-white/20 flex items-center gap-1 shadow-sm"
-                                        style={{ backgroundColor: effect.color }}
-                                    >
-                                        {effect.label}
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); removeEffect(effect.id); }}
-                                            className="ml-1 hover:text-black hover:scale-125 transition-transform"
-                                            title="Eliminar ventaja/desventaja"
+                                {profile.events && profile.events.filter(e => e.type === 'Ventaja' || e.type === 'Desventaja').map(effect => {
+                                    const isBad = effect.type === 'Desventaja' || effect.points < 0;
+                                    const color = isBad ? '#ef4444' : '#22c55e';
+                                    return (
+                                        <div
+                                            key={effect.id}
+                                            className="px-2 py-1 text-xs font-bold text-white rounded border border-white/20 flex items-center gap-1 shadow-sm"
+                                            style={{ backgroundColor: color }}
                                         >
-                                            ×
-                                        </button>
-                                    </div>
-                                ))}
-                                <button
-                                    onClick={addEffect}
-                                    className="px-2 py-1 text-xs font-bold text-white bg-[#808080] rounded border border-white/20 shadow-sm hover:scale-110 transition-transform"
-                                    title="Añadir ventaja/desventaja"
-                                >
-                                    + Añadir Efecto
-                                </button>
+                                            {effect.desc}
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); onDeleteEvent(profile.id, effect.id, effect.points, profile.points); }}
+                                                className="ml-1 hover:text-black hover:scale-125 transition-transform"
+                                                title="Eliminar ventaja/desventaja"
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
@@ -143,19 +128,10 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, isLeading, on
                 playerName={profile.name}
                 events={profile.events}
                 onAddEvent={(newEvent: Omit<AppEvent, 'id'>) => {
-                    const eventWithId = { ...newEvent, id: Date.now().toString() };
-                    onUpdateProfile({
-                        ...profile,
-                        events: [eventWithId, ...profile.events],
-                        points: profile.points + newEvent.points
-                    });
+                    onAddEvent(profile.id, newEvent, profile.points);
                 }}
                 onDeleteEvent={(eventId: string, pointsToRevert: number) => {
-                    onUpdateProfile({
-                        ...profile,
-                        events: profile.events.filter(e => e.id !== eventId),
-                        points: profile.points - pointsToRevert
-                    });
+                    onDeleteEvent(profile.id, eventId, pointsToRevert, profile.points);
                 }}
             />
         </>

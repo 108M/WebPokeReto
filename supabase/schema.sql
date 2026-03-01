@@ -33,20 +33,22 @@ create table public.dead_pokemon (
 );
 
 -- EVENTS (Log of all point changes)
-create type event_type as enum (
-  'pokemon_death', 
-  'revive_locke', 
-  'end_locke_bonus', 
-  'illegal_heal', 
-  'manual_adjustment'
-);
-
 create table public.events (
   id uuid default uuid_generate_v4() primary key,
   profile_id uuid references public.profiles(id) on delete cascade not null,
-  type event_type not null,
+  type text not null, -- Muerte, Ventaja, Medalla, Otros
   points_change integer not null,
   description text,
+  event_date date not null default current_date,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- ACTIVE EFFECTS (Current Advantages/Disadvantages)
+create table public.active_effects (
+  id uuid default uuid_generate_v4() primary key,
+  profile_id uuid references public.profiles(id) on delete cascade not null,
+  label text not null,
+  color text not null, -- Hex color code
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
@@ -65,6 +67,7 @@ alter table public.profiles enable row level security;
 alter table public.badges enable row level security;
 alter table public.dead_pokemon enable row level security;
 alter table public.events enable row level security;
+alter table public.active_effects enable row level security;
 alter table public.roulette_logs enable row level security;
 
 -- Policies (Allow all for rapid MVP development, restrict later if needed)
@@ -72,14 +75,18 @@ create policy "Allow public read access" on public.profiles for select using (tr
 create policy "Allow public read access" on public.badges for select using (true);
 create policy "Allow public read access" on public.dead_pokemon for select using (true);
 create policy "Allow public read access" on public.events for select using (true);
+create policy "Allow public read access" on public.active_effects for select using (true);
 create policy "Allow public read access" on public.roulette_logs for select using (true);
 
 create policy "Allow public insert" on public.profiles for insert with check (true);
 create policy "Allow public insert" on public.badges for insert with check (true);
 create policy "Allow public insert" on public.dead_pokemon for insert with check (true);
 create policy "Allow public insert" on public.events for insert with check (true);
+create policy "Allow public insert" on public.active_effects for insert with check (true);
 create policy "Allow public insert" on public.roulette_logs for insert with check (true);
 
 create policy "Allow public update" on public.profiles for update using (true);
 create policy "Allow public update" on public.badges for update using (true);
 create policy "Allow public update" on public.dead_pokemon for update using (true);
+create policy "Allow public delete" on public.events for delete using (true);
+create policy "Allow public delete" on public.active_effects for delete using (true);

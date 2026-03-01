@@ -92,6 +92,7 @@ export const EventHistoryModal: React.FC<EventHistoryModalProps> = ({ isOpen, on
                                 <label className="block text-sm font-bold text-gray-700 mb-1">Tipo</label>
                                 <select className="w-full p-2 border-2 border-gray-400 rounded focus:border-blue-500 outline-none" value={newType} onChange={e => setNewType(e.target.value)}>
                                     <option value="Ventaja">Ventaja</option>
+                                    <option value="Desventaja">Desventaja</option>
                                     <option value="Muerte">Muerte</option>
                                     <option value="Medalla">Medalla</option>
                                     <option value="Otros">Otros</option>

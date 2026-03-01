@@ -8,11 +8,11 @@ interface EventModalProps {
 }
 
 const EVENT_TYPES = [
-    { id: 'pokemon_death', name: 'Muerte de Pokémon (-10)', points: -10 },
-    { id: 'revive_locke', name: 'Revivir el Locke (+80)', points: 80 },
-    { id: 'end_locke_bonus', name: 'Aguantar más (+40)', points: 40 },
-    { id: 'illegal_heal', name: 'Curar Ilegal (-15)', points: -15 },
-    { id: 'loss', name: 'Perder Combate (-80)', points: -80 },
+    { id: 'Muerte', name: 'Muerte de Pokémon (-10)', points: -10 },
+    { id: 'Medalla', name: 'Medalla Conseguida (+20)', points: 20 },
+    { id: 'Ventaja', name: 'Ventaja Manual', points: 0 },
+    { id: 'Desventaja', name: 'Desventaja Manual', points: 0 },
+    { id: 'Otros', name: 'Otros (Personalizado)', points: 0 },
 ];
 
 export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSubmit }) => {
@@ -73,6 +73,16 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSubmi
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Ej: Pikachu murió"
+                                    className="p-2 border-4 border-[#a0a0a0] bg-white rounded font-[var(--font-gba)] text-xl gba-text focus:outline-none focus:border-[#3080c0]"
+                                />
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <label className="text-xl gba-text">PUNTOS:</label>
+                                <input
+                                    type="number"
+                                    value={selectedEvent.points}
+                                    onChange={(e) => setSelectedEvent({ ...selectedEvent, points: parseInt(e.target.value) || 0 })}
                                     className="p-2 border-4 border-[#a0a0a0] bg-white rounded font-[var(--font-gba)] text-xl gba-text focus:outline-none focus:border-[#3080c0]"
                                 />
                             </div>

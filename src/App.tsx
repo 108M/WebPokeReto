@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ProfileCard } from './components/ProfileCard';
 import { Roulette } from './components/Roulette';
+import { supabase } from './lib/supabase';
 
 export interface AppEvent {
   id: string;
@@ -11,16 +12,12 @@ export interface AppEvent {
   date: string;
 }
 
-export interface ActiveEffect {
-  id: string;
-  label: string;
-  color: string;
-}
 
 export interface Medal {
   id: string;
   name: string;
   obtained: boolean;
+  index: number;
 }
 
 export interface UserProfile {
@@ -30,59 +27,91 @@ export interface UserProfile {
   points: number;
   medals: Medal[];
   events: AppEvent[];
-  activeEffects: ActiveEffect[];
 }
-
-const initialProfiles: UserProfile[] = [
-  {
-    id: '1',
-    name: 'Markel',
-    avatar: '/markel.png',
-    points: 120,
-    medals: Array.from({ length: 8 }).map((_, i) => ({ id: `m${i}`, name: `Medal ${i + 1}`, obtained: i < 3 })),
-    events: [
-      { id: '1', type: 'Muerte', desc: 'Perdió a Pikachu contra el Líder', points: -10, date: '2023-10-25' },
-      { id: '2', type: 'Medalla', desc: 'Consiguió la Medalla Roca', points: 20, date: '2023-10-23' },
-    ],
-    activeEffects: [
-      { id: 'e1', label: '+2 Niveles', color: '#22c55e' }
-    ]
-  },
-  {
-    id: '2',
-    name: 'Raul',
-    avatar: '/raul.png',
-    points: 90,
-    medals: Array.from({ length: 8 }).map((_, i) => ({ id: `m${i}`, name: `Medal ${i + 1}`, obtained: i < 2 })),
-    events: [
-      { id: '3', type: 'Ventaja', desc: 'Encontró Poción Máxima', points: 0, date: '2023-10-24' }
-    ],
-    activeEffects: []
-  },
-  {
-    id: '3',
-    name: 'Xavi',
-    avatar: '/xavi.png',
-    points: -15,
-    medals: Array.from({ length: 8 }).map((_, i) => ({ id: `m${i}`, name: `Medal ${i + 1}`, obtained: false })),
-    events: [],
-    activeEffects: [
-      { id: 'e2', label: '-1 Poke en Gimnasio', color: '#f97316' }
-    ]
-  },
-];
 
 type AppState = 'video' | 'startMenu' | 'dashboard';
 
 function App() {
   const [appState, setAppState] = useState<AppState>('video');
   const [isRouletteOpen, setIsRouletteOpen] = useState(false);
-  const [profiles, setProfiles] = useState<UserProfile[]>(initialProfiles);
+  const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handleUpdateProfile = (updatedProfile: UserProfile) => {
-    setProfiles(prev => prev.map(p => p.id === updatedProfile.id ? updatedProfile : p));
+  const fetchAllData = async () => {
+    const { data: profilesData } = await supabase.from('profiles').select('*');
+    if (!profilesData) return;
+
+    const { data: badgesData } = await supabase.from('badges').select('*');
+    const { data: eventsData } = await supabase.from('events').select('*');
+
+    const assembledProfiles = profilesData.map(p => {
+      const pBadges = badgesData?.filter(b => b.profile_id === p.id).map(b => ({
+        id: b.id, name: `Medal ${b.badge_index + 1}`, obtained: b.is_obtained, index: b.badge_index
+      })) || [];
+      pBadges.sort((a, b) => a.index - b.index);
+
+      const pEvents = eventsData?.filter(e => e.profile_id === p.id).map(e => ({
+        id: e.id, type: e.type, desc: e.description, points: e.points_change, date: e.event_date
+      })) || [];
+      pEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+      return {
+        id: p.id,
+        name: p.username,
+        avatar: p.avatar_url,
+        points: p.total_points,
+        medals: pBadges,
+        events: pEvents
+      } as UserProfile;
+    });
+
+    assembledProfiles.sort((a, b) => b.points - a.points);
+    setProfiles(assembledProfiles);
   };
+
+  useEffect(() => {
+    fetchAllData();
+    const channel = supabase.channel('schema-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+        fetchAllData();
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const handleToggleMedal = async (profileId: string, badgeIndex: number, currentObtained: boolean) => {
+    setProfiles(prev => prev.map(p => p.id === profileId ? {
+      ...p,
+      medals: p.medals.map(m => m.index === badgeIndex ? { ...m, obtained: !currentObtained } : m)
+    } : p));
+    await supabase.from('badges').update({ is_obtained: !currentObtained }).eq('profile_id', profileId).eq('badge_index', badgeIndex);
+  };
+
+  const handleAddEvent = async (profileId: string, newEvent: Omit<AppEvent, 'id'>, currentPoints: number) => {
+    const tempId = Date.now().toString();
+    setProfiles(prev => prev.map(p => p.id === profileId ? {
+      ...p,
+      events: [{ ...newEvent, id: tempId }, ...p.events],
+      points: p.points + newEvent.points
+    } : p));
+
+    await supabase.from('events').insert({ profile_id: profileId, type: newEvent.type, points_change: newEvent.points, description: newEvent.desc, event_date: newEvent.date });
+    await supabase.from('profiles').update({ total_points: currentPoints + newEvent.points }).eq('id', profileId);
+  };
+
+  const handleDeleteEvent = async (profileId: string, eventId: string, pointsToRevert: number, currentPoints: number) => {
+    setProfiles(prev => prev.map(p => p.id === profileId ? {
+      ...p,
+      events: p.events.filter(e => e.id !== eventId),
+      points: p.points - pointsToRevert
+    } : p));
+    await supabase.from('events').delete().eq('id', eventId);
+    await supabase.from('profiles').update({ total_points: currentPoints - pointsToRevert }).eq('id', profileId);
+  };
+
+
 
   useEffect(() => {
     // Attempt to bypass browser autoplay restrictions by listening for ANY click on the page
@@ -250,7 +279,9 @@ function App() {
                     key={profile.id}
                     profile={profile}
                     isLeading={index === 0 && profile.points > 0}
-                    onUpdateProfile={handleUpdateProfile}
+                    onToggleMedal={handleToggleMedal}
+                    onAddEvent={handleAddEvent}
+                    onDeleteEvent={handleDeleteEvent}
                   />
                 ))}
               </div>
