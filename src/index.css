@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@theme {
+  --font-gba: "VT323", monospace;
+  --color-gba-blue: #306082;
+  --color-gba-blue-light: #5088b0;
+  --color-gba-green: #30a050;
+  --color-gba-dark: #081820;
+  --color-gba-light: #f8f8f8;
+  --color-gba-panel-bg: #f8f8f8;
+  --color-gba-panel-border: #606060;
+  --color-gba-red: #e04040;
+  --color-gba-red-light: #f88888;
+}
+
+@layer base {
+  body {
+    @apply font-[var(--font-gba)];
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+  }
+}
+
+@layer components {
+
+  /* Classic FireRed Dialogue Box Background */
+  .gba-panel {
+    @apply bg-[var(--color-gba-panel-bg)] text-[#404040] relative p-4;
+    border: 4px solid var(--color-gba-panel-border);
+    box-shadow:
+      inset 0 0 0 4px #c0c0c0,
+      /* Inner border light */
+      0 0 0 4px #000000;
+    /* Outer black border */
+    border-radius: 12px;
+  }
+
+  /* Darker alternate panel for lists */
+  .gba-panel-dark {
+    @apply bg-[#e0e0e0] text-[#303030] relative p-4;
+    border: 4px solid #a0a0a0;
+    box-shadow:
+      inset 0 0 0 4px #e8e8e8,
+      0 0 0 4px #000000;
+    border-radius: 12px;
+  }
+
+  /* GBA Text with its iconic drop shadow */
+  .gba-text {
+    @apply text-[#404040] font-bold;
+    text-shadow: 2px 2px 0px #d0d0c8;
+  }
+
+  /* GBA Text for dark backgrounds */
+  .gba-text-white {
+    @apply text-white font-bold tracking-widest;
+    text-shadow: 2px 2px 0px #404040;
+  }
+
+  /* Classic 3D clickable retro buttons */
+  .gba-button {
+    @apply bg-white text-[#404040] px-6 py-3 text-xl tracking-wider relative font-bold cursor-pointer active:translate-y-1 transition-transform;
+    border: 3px solid #606060;
+    box-shadow:
+      inset -3px -3px 0px 0px #c0c0c0,
+      /* Bottom right shading */
+      inset 3px 3px 0px 0px #ffffff,
+      /* Top left highlight */
+      0 0 0 3px #000;
+    /* Outer black line */
+    border-radius: 8px;
+    text-shadow: 2px 2px 0px #d0d0c8;
+  }
+
+  .gba-button:active {
+    box-shadow:
+      inset 3px 3px 0px 0px #c0c0c0,
+      /* Invert shading to simulate press */
+      inset -3px -3px 0px 0px #ffffff,
+      0 0 0 3px #000;
+  }
+
+  .gba-button-red {
+    @apply bg-[var(--color-gba-red)] text-white px-6 py-3 text-xl tracking-wider relative font-bold cursor-pointer active:translate-y-1 transition-transform;
+    border-color: #902020;
+    box-shadow:
+      inset -3px -3px 0px 0px #902020,
+      inset 3px 3px 0px 0px var(--color-gba-red-light),
+      0 0 0 3px #000;
+    text-shadow: 2px 2px 0px #601010;
+  }
+
+  .gba-button-red:active {
+    box-shadow:
+      inset 3px 3px 0px 0px #902020,
+      inset -3px -3px 0px 0px var(--color-gba-red-light),
+      0 0 0 3px #000;
+  }
+
+  .gba-button-blue {
+    @apply bg-[var(--color-gba-blue)] text-white px-6 py-3 text-xl tracking-wider relative font-bold cursor-pointer active:translate-y-1 transition-transform;
+    border-color: #183040;
+    box-shadow:
+      inset -3px -3px 0px 0px #183040,
+      inset 3px 3px 0px 0px var(--color-gba-blue-light),
+      0 0 0 3px #000;
+    text-shadow: 2px 2px 0px #102030;
+  }
+
+  .gba-button-blue:active {
+    box-shadow:
+      inset 3px 3px 0px 0px #183040,
+      inset -3px -3px 0px 0px var(--color-gba-blue-light),
+      0 0 0 3px #000;
+  }
+}

@@ -1,0 +1,82 @@
+# Pokémon Z Ladder Implementation Plan
+
+Establish a real-time ladder for a Pokémon Z challenge with GBA-style aesthetics, featuring badge tracking, event logging, and a roulette system.
+
+## Proposed Changes
+
+### Tech Stack
+- **Frontend**: React + TypeScript + Vite.
+- **Styling**: Tailwind CSS + Pixel-art fonts + Glassmorphism/Retro UI.
+- **Backend/DB**: Supabase (PostgreSQL + Real-time + Auth).
+- **Animations**: Framer Motion for GBA-style transitions.
+
+---
+
+### Database Schema (Supabase)
+- **`profiles`**: `id`, `username`, `avatar_url`, `total_points`, `current_gym_badge_count`.
+- **`badges`**: `id`, `profile_id`, `badge_index`, `is_obtained`.
+- **`events`**: `id`, `profile_id`, `event_type`, `points_change`, `description`, `timestamp`.
+  - Event types: `pokemon_death`, `revive_locke`, `end_locke_bonus`, `illegal_heal`, `manual_adjustment`.
+- **`roulette_logs`**: `id`, `profile_id`, `target_profile_id`, `effect`, `description`, `timestamp`.
+- **`dead_pokemon`**: `id`, `profile_id`, `name`, `status` (dead/ultratumba).
+
+---
+
+### UI Components
+
+#### [NEW] `IntroScreen.tsx`
+A screen simulating a GBA Pokémon game startup.
+- Animation of Pokémon sprites.
+- "Press START" button to enter the ladder.
+
+#### [NEW] `LadderDashboard.tsx`
+The main view showing all participants.
+- Sorted list of players by points.
+- Badge row for each player (colored/grayscale).
+- "Register Event" button for quick updates.
+
+#### [NEW] `EventModal.tsx`
+Form to log occurrences (e.g., "Perdí un Pokémon", "Gané medalla").
+- Updates `profiles.total_points` and inserts into `events` table.
+
+#### [NEW] `Roulette.tsx`
+A visual wheel with the following outcomes:
+- **Reroll**: Next route capture must be rerolled.
+- **Level Buff**: 2-3 extra levels for gym (half team, RNG logic).
+- **Ban Pokémon**: Prevent a rival's Pokémon from gym/Showdown.
+- **Revive**: Revive one dead Pokémon.
+- **Minus One**: Rival uses 1 less Pokémon in next gym (RNG selected).
+- **Retro Capture**: Capture on visited or immediate next route.
+- **Capture Ban**: Rival cannot capture on next route.
+- **Revive Locke**: +80 points (1% chance).
+- **Item Buff/Shop**: Use found items or buy 5 specific items.
+- **Throw Items**: Lose 3 best potions.
+
+## Scoring Rules Logic
+- **Perder Combate (Game Over)**: -80 pts.
+- **Muerte Pokémon**: -10 pts.
+- **Revivir Locke (Ruleta)**: +80 pts.
+- **Last Man Standing**: +40 pts.
+- **Curar Ilegal**: -15 pts (unless dies immediately after).
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Supabase Configuration**: I will need you to create a Supabase project and provide the URL and Anon Key, or I can help you set up a mock/local version first.
+
+> [!WARNING]
+> **Scoring Rules**: I've assumed "-10 points for death". I need a full list of your scoring rules to implement the logic correctly.
+
+> [!NOTE]
+> **Assets**: Do you have specific images for the badges and Pokémon, or should I use placeholders from an API PokeAPI?
+
+## Verification Plan
+
+### Automated Tests
+- None planned for the initial MVP, focusing on manual verification of real-time syncing.
+
+### Manual Verification
+1. **Real-time Sync**: Open two browser tabs and log an event in one; verify the other tab updates the ladder score instantly.
+2. **GBA UI**: Verify the "Intro Screen" correctly transitions to the Dashboard upon clicking Start.
+3. **Badge Visibility**: Add a badge to a profile and ensure it changes from grayscale to colored in the UI.
+4. **Roulette**: Perform a spin and check if the database reflects the new effect for the targeted friend.

@@ -1,0 +1,24 @@
+# Pokémon Z Ladder Task List
+
+- [ ] Project Initialization [/]
+    - [x] Initialize React + TS project (Vite)
+    - [/] Setup Tailwind CSS and GBA Design System
+    - [ ] Install dependencies (Supabase, Framer Motion)
+- [ ] Backend Setup [ ]
+    - [ ] Configure Supabase project
+    - [ ] Define database schema (users, points, badges, events, roulette)
+    - [ ] Setup real-time subscriptions
+- [ ] Core UI Components [ ]
+    - [ ] GBA-style Intro Screen with "Start" button
+    - [ ] Main Ladder Dashboard
+    - [ ] Badge Tracking System
+    - [ ] Event Logging Modal/Button
+    - [ ] Roulette Mechanism
+- [ ] Feature Implementation [ ]
+    - [ ] Real-time point synchronization
+    - [ ] Badge visibility logic
+    - [ ] Roulette animation and consequence distribution
+- [ ] Polishing & Verification [ ]
+    - [ ] GBA-style animations and sound effects (optional)
+    - [ ] Final UI/UX pass
+    - [ ] Test real-time updates across multiple sessions
