@@ -250,14 +250,33 @@ function App() {
                 imageRendering: 'pixelated'
               }}
             >
-              <div className="flex justify-between items-center mb-8 bg-gradient-to-r from-[#1a365d] via-[#2b6cb0] to-[#1a365d] p-4 rounded-lg border-4 border-[#e2e8f0] shadow-[0_6px_0_#0f172a,inset_0_4px_0_rgba(255,255,255,0.2)]">
-                <div className="flex items-center gap-4">
-                  <div className="w-4 h-12 bg-yellow-400 rounded-sm shadow-[inset_2px_0_0_rgba(255,255,255,0.5),inset_-2px_0_0_rgba(0,0,0,0.3)]"></div>
-                  <h2 className="text-5xl gba-text text-white tracking-widest" style={{ textShadow: '3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000' }}>
-                    POKEMON Z LADDER
-                  </h2>
+              <div className="relative flex items-center justify-center mb-8 w-full">
+                <div
+                  className="relative flex flex-col items-center justify-center p-6 pb-5 w-full max-w-4xl z-0"
+                  style={{
+                    backgroundImage: 'url(/titleheader.png)',
+                    backgroundSize: '100% 100%',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    imageRendering: 'pixelated',
+                    minHeight: '130px'
+                  }}
+                >
+                  <div className="flex flex-col items-center gap-1 mt-1">
+                    <h2 className="text-5xl font-bold gba-text text-[#f5c786] tracking-widest" style={{ textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 3px 0 #000, 3px 0 0 #000, 0 -3px 0 #000, -3px 0 0 #000, 4px 4px 0 #000' }}>
+                      TABLA DE CLASIFICACIÓN
+                    </h2>
+                    <div className="flex items-center gap-3 mt-1">
+                      <img src="/copa.png" className="h-[44px] w-auto filter drop-shadow-[2px_2px_0_rgba(0,0,0,1)] -mt-2" alt="Copa" />
+                      <h3 className="text-3xl font-bold gba-text text-[#82cfb8] tracking-widest leading-none pt-2" style={{ textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 3px 0 #000, 3px 0 0 #000, 0 -3px 0 #000, -3px 0 0 #000, 3px 3px 0 #000' }}>
+                        LIGA POKEMON Z
+                      </h3>
+                      <img src="/logoliga.png" className="h-[40px] w-auto filter drop-shadow-[2px_2px_0_rgba(0,0,0,1)]" alt="Liga" />
+                    </div>
+                  </div>
                 </div>
-                <div className="flex gap-4">
+
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-4 pr-2 z-10">
                   <button
                     onClick={() => setIsRouletteOpen(true)}
                     className="gba-button-blue"

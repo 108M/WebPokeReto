@@ -8,16 +8,15 @@ interface RouletteProps {
 }
 
 const ROULETTE_EFFECTS = [
-    { id: 'reroll', label: 'Reroll Ruta', color: '#3b82f6', chance: 15 },
-    { id: 'level_buff', label: '+2/3 Niveles', color: '#22c55e', chance: 15 },
-    { id: 'ban_poke', label: 'Banear Pokémon', color: '#ef4444', chance: 10 },
-    { id: 'revive_1', label: 'Revivir 1 Poke', color: '#eab308', chance: 5 },
-    { id: 'minus_one', label: '-1 Poke en Gimnasio', color: '#f97316', chance: 10 },
-    { id: 'retro_cap', label: 'Captura Retro', color: '#a855f7', chance: 15 },
-    { id: 'cap_ban', label: 'Ban Captura', color: '#ec4899', chance: 10 },
-    { id: 'items', label: 'Buff Objetos', color: '#06b6d4', chance: 10 },
-    { id: 'throw_items', label: 'Tirar Pociones', color: '#64748b', chance: 9 },
-    { id: 'revive_locke', label: 'Revivir Locke (+80)', color: '#ffd700', chance: 1 },
+    { id: 'reroll_ruta', label: 'REROLL POKEMON DE RUTA', color: '#000000', chance: 25 }, // (0, 0, 0)
+    { id: 'niveles_mas', label: '2-3 NIVELES MAS', color: '#a52a2a', chance: 15 }, // (165, 42, 42) ~ 0.1499 -> 15%
+    { id: 'banear_rival', label: 'BANEAR POKEMON DEL RIVAL', color: '#808080', chance: 5 }, // (128, 128, 128)
+    { id: 'revivir_poke', label: 'REVIVIR POKEMON', color: '#00ff00', chance: 20 }, // (0, 255, 0)
+    { id: 'poke_menos', label: '1 POKEMON MENOS', color: '#ffa500', chance: 10 }, // (255, 165, 0)
+    { id: 'captura_libre', label: 'CAPTURA LIBRE', color: '#ffc0cb', chance: 3 }, // (255, 192, 203)
+    { id: 'ban_captura', label: 'BAN DE CAPTURA', color: '#800080', chance: 12 }, // (128, 0, 128)
+    { id: 'res_locke', label: 'RES LOCKE', color: '#330033', chance: 1 }, // (51, 0, 51) "Rojo" Oscuro
+    { id: 'objetos_adicionales', label: 'OBJETOS ADICIONALES', color: '#00008b', chance: 10 }, // (0, 0, 139)
 ];
 
 export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult }) => {
