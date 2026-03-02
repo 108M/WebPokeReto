@@ -58,7 +58,7 @@ function App() {
       return {
         id: p.id,
         name: p.username,
-        avatar: p.avatar_url,
+        avatar: p.avatar_url.replace('.png', '_transparent.gif').replace('/', '/gifs/'),
         points: p.total_points,
         medals: pBadges,
         events: pEvents
