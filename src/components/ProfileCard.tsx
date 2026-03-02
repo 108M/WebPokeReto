@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EventModal } from './EventModal';
 import { EventHistoryModal } from './EventHistoryModal';
+import { PokemonSearchModal } from './PokemonSearchModal';
 import type { UserProfile, AppEvent } from '../App';
 
 interface ProfileCardProps {
@@ -10,6 +11,8 @@ interface ProfileCardProps {
     onToggleMedal: (profileId: string, badgeIndex: number, currentObtained: boolean) => void;
     onAddEvent: (profileId: string, newEvent: Omit<AppEvent, 'id'>, currentPoints: number) => void;
     onDeleteEvent: (profileId: string, eventId: string, pointsToRevert: number, currentPoints: number) => void;
+    onAddPokemon: (profileId: string, slotIndex: number, pokemonName: string, spriteUrl: string) => void;
+    onRemovePokemon: (profileId: string, slotIndex: number) => void;
 }
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({
@@ -17,10 +20,14 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
     isLeading,
     onToggleMedal,
     onAddEvent,
-    onDeleteEvent
+    onDeleteEvent,
+    onAddPokemon,
+    onRemovePokemon
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+    const [isPokemonSearchOpen, setIsPokemonSearchOpen] = useState(false);
+    const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
 
     const handleEventSubmit = (eventDetails: any) => {
         onAddEvent(profile.id, {
@@ -84,6 +91,53 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                             </div>
                         </div>
                     </div>
+
+                    {/* Pokemon Team Area */}
+                    <div className="flex gap-2 mr-4 bg-black/10 p-2 rounded-xl border-t-2 border-l-2 border-black/20 shadow-inner">
+                        {[0, 1, 2, 3, 4, 5].map((slotIndex) => {
+                            const pokemon = profile.pokemonTeam?.find(p => p.slot_index === slotIndex);
+                            return (
+                                <div
+                                    key={`slot-${slotIndex}`}
+                                    className="w-16 h-16 bg-white/20 rounded-full border-2 border-black/30 flex items-center justify-center cursor-pointer hover:bg-white/40 transition-colors relative group"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (pokemon) {
+                                            if (window.confirm(`¿Quieres eliminar a ${pokemon.pokemon_name} de tu equipo?`)) {
+                                                onRemovePokemon(profile.id, slotIndex);
+                                            }
+                                        } else {
+                                            const usedSlots = new Set(profile.pokemonTeam?.map(p => p.slot_index) || []);
+                                            let firstAvailableIndex = 0;
+                                            while (firstAvailableIndex < 6 && usedSlots.has(firstAvailableIndex)) {
+                                                firstAvailableIndex++;
+                                            }
+                                            if (firstAvailableIndex < 6) {
+                                                setSelectedSlotIndex(firstAvailableIndex);
+                                                setIsPokemonSearchOpen(true);
+                                            } else {
+                                                alert("¡Tu equipo ya está lleno!");
+                                            }
+                                        }
+                                    }}
+                                    title={pokemon ? `Slot ${slotIndex + 1}: ${pokemon.pokemon_name}` : `Añadir Pokémon (Slot ${slotIndex + 1})`}
+                                >
+                                    {pokemon ? (
+                                        <>
+                                            <img src={pokemon.sprite_url} alt={pokemon.pokemon_name} className="w-16 h-16 object-contain scale-[1.7]" style={{ imageRendering: 'pixelated' }} />
+                                            {/* Hover Delete Icon */}
+                                            <div className="absolute inset-0 bg-red-500/80 rounded-full hidden group-hover:flex items-center justify-center">
+                                                <span className="text-white text-2xl font-bold">×</span>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <img src="/pokeball.png" alt="Empty slot" className="w-10 h-10 object-contain opacity-50 filter grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+
                     <button
                         onClick={() => setIsModalOpen(true)}
                         className="hover:scale-110 transition-transform ml-4"
@@ -132,6 +186,17 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                 }}
                 onDeleteEvent={(eventId: string, pointsToRevert: number) => {
                     onDeleteEvent(profile.id, eventId, pointsToRevert, profile.points);
+                }}
+            />
+
+            <PokemonSearchModal
+                isOpen={isPokemonSearchOpen}
+                onClose={() => setIsPokemonSearchOpen(false)}
+                onSelect={(pokemonName, spriteUrl) => {
+                    if (selectedSlotIndex !== null) {
+                        onAddPokemon(profile.id, selectedSlotIndex, pokemonName, spriteUrl);
+                    }
+                    setIsPokemonSearchOpen(false);
                 }}
             />
         </>

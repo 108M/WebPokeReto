@@ -62,6 +62,17 @@ create table public.roulette_logs (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
+-- POKEMON TEAM (Active team members)
+create table public.pokemon_team (
+  id uuid default uuid_generate_v4() primary key,
+  profile_id uuid references public.profiles(id) on delete cascade not null,
+  slot_index integer not null check (slot_index >= 0 and slot_index <= 5),
+  pokemon_name text not null,
+  sprite_url text not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  unique(profile_id, slot_index)
+);
+
 -- Enable Row Level Security (RLS)
 alter table public.profiles enable row level security;
 alter table public.badges enable row level security;

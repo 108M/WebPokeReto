@@ -20,6 +20,13 @@ export interface Medal {
   index: number;
 }
 
+export interface PokemonSlot {
+  id: string;
+  pokemon_name: string;
+  sprite_url: string;
+  slot_index: number;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -27,6 +34,7 @@ export interface UserProfile {
   points: number;
   medals: Medal[];
   events: AppEvent[];
+  pokemonTeam: PokemonSlot[];
 }
 
 type AppState = 'video' | 'startMenu' | 'dashboard';
@@ -43,6 +51,7 @@ function App() {
 
     const { data: badgesData } = await supabase.from('badges').select('*');
     const { data: eventsData } = await supabase.from('events').select('*');
+    const { data: teamData } = await supabase.from('pokemon_team').select('*');
 
     const assembledProfiles = profilesData.map(p => {
       const pBadges = badgesData?.filter(b => b.profile_id === p.id).map(b => ({
@@ -55,13 +64,19 @@ function App() {
       })) || [];
       pEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+      const pTeam = teamData?.filter(t => t.profile_id === p.id).map(t => ({
+        id: t.id, pokemon_name: t.pokemon_name, sprite_url: t.sprite_url, slot_index: t.slot_index
+      })) || [];
+      pTeam.sort((a, b) => a.slot_index - b.slot_index);
+
       return {
         id: p.id,
         name: p.username,
         avatar: p.avatar_url.replace('.png', '_transparent.gif').replace('/', '/gifs/'),
         points: p.total_points,
         medals: pBadges,
-        events: pEvents
+        events: pEvents,
+        pokemonTeam: pTeam
       } as UserProfile;
     });
 
@@ -111,6 +126,29 @@ function App() {
     await supabase.from('profiles').update({ total_points: currentPoints - pointsToRevert }).eq('id', profileId);
   };
 
+  const handleAddPokemon = async (profileId: string, slotIndex: number, pokemonName: string, spriteUrl: string) => {
+    const tempId = Date.now().toString();
+    setProfiles(prev => prev.map(p => p.id === profileId ? {
+      ...p,
+      pokemonTeam: [...p.pokemonTeam, { id: tempId, pokemon_name: pokemonName, sprite_url: spriteUrl, slot_index: slotIndex }].sort((a, b) => a.slot_index - b.slot_index)
+    } : p));
+
+    await supabase.from('pokemon_team').insert({
+      profile_id: profileId,
+      slot_index: slotIndex,
+      pokemon_name: pokemonName,
+      sprite_url: spriteUrl
+    });
+  };
+
+  const handleRemovePokemon = async (profileId: string, slotIndex: number) => {
+    setProfiles(prev => prev.map(p => p.id === profileId ? {
+      ...p,
+      pokemonTeam: p.pokemonTeam.filter(t => t.slot_index !== slotIndex)
+    } : p));
+
+    await supabase.from('pokemon_team').delete().eq('profile_id', profileId).eq('slot_index', slotIndex);
+  };
 
 
   useEffect(() => {
@@ -297,10 +335,12 @@ function App() {
                   <ProfileCard
                     key={profile.id}
                     profile={profile}
-                    isLeading={index === 0 && profile.points > 0}
+                    isLeading={index === 0 && profiles[0].points > profiles[1]?.points}
                     onToggleMedal={handleToggleMedal}
                     onAddEvent={handleAddEvent}
                     onDeleteEvent={handleDeleteEvent}
+                    onAddPokemon={handleAddPokemon}
+                    onRemovePokemon={handleRemovePokemon}
                   />
                 ))}
               </div>
