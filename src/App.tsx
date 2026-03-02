@@ -40,7 +40,14 @@ export interface UserProfile {
 type AppState = 'video' | 'startMenu' | 'dashboard';
 
 function App() {
-  const [appState, setAppState] = useState<AppState>('video');
+  const [appState, setAppState] = useState<AppState>(() => {
+    const savedState = localStorage.getItem('appState');
+    return (savedState as AppState) || 'video';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('appState', appState);
+  }, [appState]);
   const [isRouletteOpen, setIsRouletteOpen] = useState(false);
   const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
