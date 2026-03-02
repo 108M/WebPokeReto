@@ -71,11 +71,11 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
                         initial={{ scale: 0.8, rotate: -5 }}
                         animate={{ scale: 1, rotate: 0 }}
                         exit={{ scale: 0.8, opacity: 0 }}
-                        className="w-full max-w-lg gba-panel flex flex-col items-center"
+                        className="w-[95%] md:w-full max-w-lg gba-panel flex flex-col items-center p-4 md:p-6"
                     >
-                        <h2 className="text-4xl gba-text mb-8 tracking-widest text-shadow-sm">RULETA Z</h2>
+                        <h2 className="text-3xl md:text-4xl gba-text mb-4 md:mb-8 tracking-widest text-shadow-sm">RULETA Z</h2>
 
-                        <div className="relative w-64 h-64 mb-8">
+                        <div className="relative w-48 h-48 md:w-64 md:h-64 mb-4 md:mb-8">
                             <motion.div
                                 animate={{ rotate: isSpinning ? 360 * 8 : 0 }}
                                 transition={{ duration: 5, ease: 'easeOut' }}
@@ -90,22 +90,22 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
                             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0 border-l-[15px] border-r-[15px] border-t-[30px] border-l-transparent border-r-transparent border-t-yellow-400 drop-shadow-lg z-10" />
                         </div>
 
-                        <div className="h-16 flex items-center justify-center w-full">
+                        <div className="h-16 flex items-center justify-center w-full px-2">
                             {result ? (
                                 <motion.div
                                     initial={{ scale: 0.5, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
-                                    className="text-2xl text-center px-6 py-3 gba-panel-dark rounded-lg border-2 font-bold transform transition-transform"
+                                    className="text-xl md:text-2xl text-center px-4 md:px-6 py-2 md:py-3 gba-panel-dark rounded-lg border-2 font-bold transform transition-transform"
                                     style={{ borderColor: result.color, color: result.color }}
                                 >
                                     {result.label}
                                 </motion.div>
                             ) : (
-                                <p className="text-xl gba-text text-[#808080]">Pulsa Girar para probar tu suerte</p>
+                                <p className="text-lg md:text-xl gba-text text-[#808080] text-center">Pulsa Girar para probar tu suerte</p>
                             )}
                         </div>
 
-                        <div className="flex gap-4 mt-8 w-full justify-center">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-4 md:mt-8 w-full justify-center">
                             <button
                                 onClick={onClose}
                                 disabled={isSpinning}

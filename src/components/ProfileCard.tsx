@@ -49,22 +49,22 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ layout: { type: "spring", stiffness: 300, damping: 30 } }}
-                className={`relative w-full p-4 mb-4 ${isLeading ? 'gba-panel' : 'gba-panel-dark'}`}
+                className={`relative w-full p-2 md:p-4 mb-4 ${isLeading ? 'gba-panel' : 'gba-panel-dark'}`}
             >
-                <div className="flex flex-row justify-between items-center mb-2">
+                <div className="flex flex-col md:flex-row justify-between items-center md:items-start mb-2 gap-4 md:gap-0">
                     <div
-                        className="flex items-center gap-4 cursor-pointer hover:bg-black/5 p-2 rounded-lg transition-colors flex-1"
+                        className="flex flex-row items-center gap-2 md:gap-4 cursor-pointer hover:bg-black/5 p-2 rounded-lg transition-colors flex-1 w-full md:w-auto"
                         onClick={() => setIsHistoryModalOpen(true)}
                         title="Ver historial de eventos"
                     >
                         <img
                             src={profile.avatar}
                             alt={`${profile.name} avatar`}
-                            className="w-20 h-20 object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] hover:scale-110 transition-transform"
+                            className="w-16 h-16 md:w-20 md:h-20 object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] hover:scale-110 transition-transform"
                         />
-                        <div>
-                            <h3 className="text-3xl gba-text">{profile.name} {isLeading && '👑'}</h3>
-                            <p className="text-xl gba-text text-[#306082]">{profile.points} PTS</p>
+                        <div className="flex-1">
+                            <h3 className="text-xl md:text-3xl gba-text mb-0 md:mb-1">{profile.name} {isLeading && '👑'}</h3>
+                            <p className="text-lg md:text-xl gba-text text-[#306082] mt-0">{profile.points} PTS</p>
 
                             {/* Active Effects / Ventajas Display */}
                             <div className="flex gap-2 mt-2 flex-wrap items-center">
@@ -93,13 +93,13 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                     </div>
 
                     {/* Pokemon Team Area */}
-                    <div className="flex gap-2 mr-4 bg-black/10 p-2 rounded-xl border-t-2 border-l-2 border-black/20 shadow-inner">
+                    <div className="flex flex-wrap md:flex-nowrap justify-center gap-1 md:gap-2 mx-auto md:mx-0 md:mr-4 bg-black/10 p-2 rounded-xl border-t-2 border-l-2 border-black/20 shadow-inner w-full md:w-auto">
                         {[0, 1, 2, 3, 4, 5].map((slotIndex) => {
                             const pokemon = profile.pokemonTeam?.find(p => p.slot_index === slotIndex);
                             return (
                                 <div
                                     key={`slot-${slotIndex}`}
-                                    className="w-16 h-16 bg-white/20 rounded-full border-2 border-black/30 flex items-center justify-center cursor-pointer hover:bg-white/40 transition-colors relative group"
+                                    className="w-12 h-12 md:w-16 md:h-16 bg-white/20 rounded-full border-2 border-black/30 flex items-center justify-center cursor-pointer hover:bg-white/40 transition-colors relative group"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         if (pokemon) {
@@ -140,14 +140,14 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
 
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="hover:scale-110 transition-transform ml-4"
+                        className="absolute md:static top-2 right-2 md:top-auto md:right-auto hover:scale-110 transition-transform ml-0 md:ml-4 z-10"
                         title="Añadir nuevo evento"
                     >
-                        <img src="/addbutton.png" alt="Add Event" className="w-16 h-16 object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+                        <img src="/addbutton.png" alt="Add Event" className="w-12 h-12 md:w-16 md:h-16 object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
                     </button>
                 </div>
 
-                <div className="mt-4 flex flex-row gap-2 justify-start items-center p-3 bg-black/10 rounded-lg inset-shadow-sm border-t-2 border-black/10">
+                <div className="mt-2 md:mt-4 flex flex-row flex-wrap md:flex-nowrap gap-1 md:gap-2 justify-center md:justify-start items-center p-2 md:p-3 bg-black/10 rounded-lg inset-shadow-sm border-t-2 border-black/10">
                     {profile.medals.map((medal, idx) => {
                         const imageFileName = medal.obtained ? `medalla${idx + 1}-color.png` : `medalla${idx + 1}.png`;
                         const backgroundImage = `url(/${imageFileName})`;

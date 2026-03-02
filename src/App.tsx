@@ -225,7 +225,7 @@ function App() {
               <video
                 ref={videoRef}
                 src="/pokemon_intro.mp4"
-                className="w-full h-full object-cover"
+                className="w-full max-w-4xl h-auto object-contain"
                 autoPlay
                 muted // Muted to ensure autoplay works on modern browsers, but bg-music plays over it
                 playsInline
@@ -260,7 +260,7 @@ function App() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 src="/logo.png"
                 alt="Pokémon Z Ladder Logo"
-                className="w-3/4 max-w-[600px] mt-16 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] z-10"
+                className="w-[90%] md:w-3/4 max-w-[600px] mt-16 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] z-10"
               />
 
               <motion.button
@@ -288,42 +288,42 @@ function App() {
                 imageRendering: 'pixelated'
               }}
             >
-              <div className="relative flex items-center justify-center mb-8 w-full">
+              <div className="relative flex flex-col md:block items-center justify-center mb-12 md:mb-8 w-full">
                 <div
-                  className="relative flex flex-col items-center justify-center p-6 pb-5 w-full max-w-4xl z-0"
+                  className="relative flex flex-col items-center justify-center p-2 md:p-6 pb-2 md:pb-5 w-[96%] md:w-full max-w-4xl z-0"
                   style={{
                     backgroundImage: 'url(/titleheader.png)',
                     backgroundSize: '100% 100%',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     imageRendering: 'pixelated',
-                    minHeight: '130px'
+                    minHeight: '80px'
                   }}
                 >
-                  <div className="flex flex-col items-center gap-1 mt-1">
-                    <h2 className="text-5xl font-bold gba-text text-[#f5c786] tracking-widest" style={{ textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 3px 0 #000, 3px 0 0 #000, 0 -3px 0 #000, -3px 0 0 #000, 4px 4px 0 #000' }}>
+                  <div className="flex flex-col items-center gap-0 md:gap-1 mt-1 px-4 md:px-0">
+                    <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold gba-text text-[#f5c786] tracking-widest text-center" style={{ textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 3px 0 #000, 3px 0 0 #000, 0 -3px 0 #000, -3px 0 0 #000, 4px 4px 0 #000' }}>
                       TABLA DE CLASIFICACIÓN
                     </h2>
-                    <div className="flex items-center gap-3 mt-1">
-                      <img src="/copa.png" className="h-[44px] w-auto filter drop-shadow-[2px_2px_0_rgba(0,0,0,1)] -mt-2" alt="Copa" />
-                      <h3 className="text-3xl font-bold gba-text text-[#82cfb8] tracking-widest leading-none pt-2" style={{ textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 3px 0 #000, 3px 0 0 #000, 0 -3px 0 #000, -3px 0 0 #000, 3px 3px 0 #000' }}>
+                    <div className="flex items-center gap-1 sm:gap-2 md:gap-3 mt-1 sm:mt-0">
+                      <img src="/copa.png" className="hidden sm:block h-[24px] md:h-[44px] w-auto filter drop-shadow-[2px_2px_0_rgba(0,0,0,1)] -mt-1 md:-mt-2" alt="Copa" />
+                      <h3 className="text-lg sm:text-xl md:text-3xl font-bold gba-text text-[#82cfb8] tracking-widest leading-none pt-1 md:pt-2" style={{ textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 3px 0 #000, 3px 0 0 #000, 0 -3px 0 #000, -3px 0 0 #000, 3px 3px 0 #000' }}>
                         LIGA POKEMON Z
                       </h3>
-                      <img src="/logoliga.png" className="h-[40px] w-auto filter drop-shadow-[2px_2px_0_rgba(0,0,0,1)]" alt="Liga" />
+                      <img src="/logoliga.png" className="hidden sm:block h-[24px] md:h-[40px] w-auto filter drop-shadow-[2px_2px_0_rgba(0,0,0,1)]" alt="Liga" />
                     </div>
                   </div>
                 </div>
 
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-4 pr-2 z-10">
+                <div className="absolute right-0 top-full md:top-1/2 md:-translate-y-1/2 flex flex-row md:flex-col gap-2 md:gap-4 pr-0 md:pr-2 z-10 mt-2 md:mt-0 justify-center w-full md:w-auto">
                   <button
                     onClick={() => setIsRouletteOpen(true)}
-                    className="gba-button-blue"
+                    className="gba-button-blue text-sm md:text-xl px-4 py-2"
                   >
                     RULETA Z
                   </button>
                   <button
                     onClick={() => setAppState('startMenu')}
-                    className="gba-button"
+                    className="gba-button text-sm md:text-xl px-4 py-2"
                   >
                     SALIR
                   </button>

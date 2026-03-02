@@ -42,13 +42,13 @@ export const EventHistoryModal: React.FC<EventHistoryModalProps> = ({ isOpen, on
                         animate={{ scale: 1, y: 0 }}
                         exit={{ scale: 0.9, y: 20 }}
                         onClick={(e) => e.stopPropagation()}
-                        className="gba-panel w-full max-w-2xl max-h-[80vh] flex flex-col"
+                        className="gba-panel w-[95%] md:w-full max-w-2xl max-h-[90vh] md:max-h-[80vh] flex flex-col p-4 md:p-6"
                     >
-                        <div className="flex justify-between items-center mb-6 border-b-4 border-[#808080] pb-2">
-                            <h2 className="text-3xl gba-text text-[#306082]">Historial: {playerName}</h2>
+                        <div className="flex justify-between items-center mb-4 md:mb-6 border-b-4 border-[#808080] pb-2">
+                            <h2 className="text-2xl md:text-3xl gba-text text-[#306082] leading-tight break-words pr-2">Historial: {playerName}</h2>
                             <button
                                 onClick={onClose}
-                                className="text-3xl gba-text text-red-600 hover:text-red-800 hover:scale-110 transition-transform"
+                                className="text-2xl md:text-3xl gba-text text-red-600 hover:text-red-800 hover:scale-110 transition-transform shrink-0"
                             >
                                 X
                             </button>

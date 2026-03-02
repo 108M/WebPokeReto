@@ -46,7 +46,7 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSubmi
                         initial={{ scale: 0.95, y: 20 }}
                         animate={{ scale: 1, y: 0 }}
                         exit={{ scale: 0.95, y: 20 }}
-                        className="w-full max-w-md gba-panel z-10"
+                        className="w-[95%] sm:w-full max-w-md gba-panel z-10 max-h-[90vh] overflow-y-auto"
                     >
                         <div className="bg-[#3080c0] text-white p-3 border-4 border-[#103050] rounded inset-shadow-sm mb-4">
                             <h2 className="text-2xl text-center gba-text-white">REGISTRAR EVENTO</h2>
