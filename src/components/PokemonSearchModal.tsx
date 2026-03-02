@@ -64,7 +64,7 @@ export const PokemonSearchModal: React.FC<PokemonSearchModalProps> = ({ isOpen, 
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
-                    className="gba-panel max-w-md w-full"
+                    className="gba-panel w-[95%] sm:w-full max-w-md max-h-[90vh] overflow-y-auto"
                 >
                     <div className="flex justify-between items-center mb-6 border-b-2 border-black/10 pb-2">
                         <h2 className="text-2xl gba-text mb-0">Buscar Pokémon</h2>
@@ -73,11 +73,11 @@ export const PokemonSearchModal: React.FC<PokemonSearchModalProps> = ({ isOpen, 
                         </button>
                     </div>
 
-                    <form onSubmit={handleSearch} className="mb-6 flex gap-2">
+                    <form onSubmit={handleSearch} className="mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2">
                         <input
                             type="text"
                             placeholder="Nombre (ej. pikachu)"
-                            className="flex-1 px-3 py-2 border-2 border-black/20 rounded bg-white/90 text-xl shadow-inner focus:outline-none focus:border-blue-400"
+                            className="w-full sm:flex-1 px-3 py-2 border-2 border-black/20 rounded bg-white/90 text-xl shadow-inner focus:outline-none focus:border-blue-400"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
