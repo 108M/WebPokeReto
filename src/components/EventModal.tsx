@@ -52,11 +52,11 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSubmi
                             <h2 className="text-2xl text-center gba-text-white">REGISTRAR EVENTO</h2>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-2 flex flex-col gap-4">
-                            <div className="flex flex-col gap-2">
-                                <label className="text-xl gba-text">TIPO DE EVENTO:</label>
+                        <form onSubmit={handleSubmit} className="p-1 sm:p-2 flex flex-col gap-2 sm:gap-4">
+                            <div className="flex flex-col gap-1 sm:gap-2">
+                                <label className="text-lg sm:text-xl gba-text">TIPO DE EVENTO:</label>
                                 <select
-                                    className="p-2 border-4 border-[#a0a0a0] bg-white rounded font-[var(--font-gba)] text-xl gba-text"
+                                    className="p-1 sm:p-2 border-4 border-[#a0a0a0] bg-white rounded font-[var(--font-gba)] text-lg sm:text-xl gba-text"
                                     value={selectedEvent.id}
                                     onChange={(e) => setSelectedEvent(EVENT_TYPES.find(ev => ev.id === e.target.value) || EVENT_TYPES[0])}
                                 >
@@ -66,38 +66,38 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSubmi
                                 </select>
                             </div>
 
-                            <div className="flex flex-col gap-2">
-                                <label className="text-xl gba-text">DESCRIPCIÓN (Opcional):</label>
+                            <div className="flex flex-col gap-1 sm:gap-2">
+                                <label className="text-lg sm:text-xl gba-text">DESCRIPCIÓN (Opcional):</label>
                                 <input
                                     type="text"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Ej: Pikachu murió"
-                                    className="p-2 border-4 border-[#a0a0a0] bg-white rounded font-[var(--font-gba)] text-xl gba-text focus:outline-none focus:border-[#3080c0]"
+                                    className="p-1 sm:p-2 border-4 border-[#a0a0a0] bg-white rounded font-[var(--font-gba)] text-lg sm:text-xl gba-text focus:outline-none focus:border-[#3080c0]"
                                 />
                             </div>
 
-                            <div className="flex flex-col gap-2">
-                                <label className="text-xl gba-text">PUNTOS:</label>
+                            <div className="flex flex-col gap-1 sm:gap-2">
+                                <label className="text-lg sm:text-xl gba-text">PUNTOS:</label>
                                 <input
                                     type="number"
                                     value={selectedEvent.points}
                                     onChange={(e) => setSelectedEvent({ ...selectedEvent, points: parseInt(e.target.value) || 0 })}
-                                    className="p-2 border-4 border-[#a0a0a0] bg-white rounded font-[var(--font-gba)] text-xl gba-text focus:outline-none focus:border-[#3080c0]"
+                                    className="p-1 sm:p-2 border-4 border-[#a0a0a0] bg-white rounded font-[var(--font-gba)] text-lg sm:text-xl gba-text focus:outline-none focus:border-[#3080c0]"
                                 />
                             </div>
 
-                            <div className="flex justify-end gap-4 mt-8">
+                            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-4 mt-4 sm:mt-8 pb-2">
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="gba-button"
+                                    className="gba-button w-full sm:w-auto text-sm sm:text-base py-2"
                                 >
                                     CANCELAR
                                 </button>
                                 <button
                                     type="submit"
-                                    className="gba-button-red"
+                                    className="gba-button-red w-full sm:w-auto text-sm sm:text-base py-2"
                                 >
                                     CONFIRMAR
                                 </button>

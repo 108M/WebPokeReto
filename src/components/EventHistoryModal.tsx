@@ -87,7 +87,7 @@ export const EventHistoryModal: React.FC<EventHistoryModalProps> = ({ isOpen, on
                         </div>
 
                         {/* Add Event Form */}
-                        <form onSubmit={handleAdd} className="bg-[#f0f0f0] p-4 rounded border-4 border-[#c0c0c0] flex gap-2 items-end">
+                        <form onSubmit={handleAdd} className="bg-[#f0f0f0] p-3 md:p-4 rounded border-4 border-[#c0c0c0] flex flex-col sm:flex-row gap-2 sm:items-end">
                             <div className="flex-1">
                                 <label className="block text-sm font-bold text-gray-700 mb-1">Tipo</label>
                                 <select className="w-full p-2 border-2 border-gray-400 rounded focus:border-blue-500 outline-none" value={newType} onChange={e => setNewType(e.target.value)}>
@@ -102,11 +102,11 @@ export const EventHistoryModal: React.FC<EventHistoryModalProps> = ({ isOpen, on
                                 <label className="block text-sm font-bold text-gray-700 mb-1">Descripción</label>
                                 <input required type="text" className="w-full p-2 border-2 border-gray-400 rounded focus:border-blue-500 outline-none" value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Ej: Capturó a Pidgey" />
                             </div>
-                            <div className="w-24">
+                            <div className="flex-1 w-full sm:w-24">
                                 <label className="block text-sm font-bold text-gray-700 mb-1">Puntos</label>
                                 <input type="number" className="w-full p-2 border-2 border-gray-400 rounded focus:border-blue-500 outline-none" value={newPoints} onChange={e => setNewPoints(parseInt(e.target.value) || 0)} />
                             </div>
-                            <button type="submit" className="gba-button text-sm px-4 py-2 self-end mb-[2px]">
+                            <button type="submit" className="gba-button text-sm px-4 py-2 w-full sm:w-auto mt-2 sm:mt-0 sm:self-end sm:mb-[2px]">
                                 AÑADIR
                             </button>
                         </form>

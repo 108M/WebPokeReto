@@ -288,7 +288,7 @@ function App() {
                 imageRendering: 'pixelated'
               }}
             >
-              <div className="relative flex flex-col md:block items-center justify-center mb-12 md:mb-8 w-full">
+              <div className="relative flex flex-col items-center justify-center mb-4 md:mb-8 w-full">
                 <div
                   className="relative flex flex-col items-center justify-center p-2 md:p-6 pb-2 md:pb-5 w-[96%] md:w-full max-w-4xl z-0"
                   style={{
@@ -314,7 +314,7 @@ function App() {
                   </div>
                 </div>
 
-                <div className="absolute right-0 top-full md:top-1/2 md:-translate-y-1/2 flex flex-row md:flex-col gap-2 md:gap-4 pr-0 md:pr-2 z-10 mt-2 md:mt-0 justify-center w-full md:w-auto">
+                <div className="static md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 flex flex-row md:flex-col gap-2 md:gap-4 z-10 mt-4 md:mt-0 justify-center w-full md:w-auto">
                   <button
                     onClick={() => setIsRouletteOpen(true)}
                     className="gba-button-blue text-sm md:text-xl px-4 py-2"
