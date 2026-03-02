@@ -77,7 +77,7 @@ export const PokemonSearchModal: React.FC<PokemonSearchModalProps> = ({ isOpen, 
                         <input
                             type="text"
                             placeholder="Nombre (ej. pikachu)"
-                            className="w-full sm:flex-1 px-3 py-2 border-2 border-black/20 rounded bg-white/90 text-xl shadow-inner focus:outline-none focus:border-blue-400"
+                            className="w-full min-w-0 sm:flex-1 px-2 sm:px-3 py-2 border-2 border-black/20 rounded bg-white/90 text-base sm:text-xl shadow-inner focus:outline-none focus:border-blue-400"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
