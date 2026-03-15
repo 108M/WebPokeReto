@@ -77,6 +77,9 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
         }
     };
 
+    const generalRules = rules.filter(r => !r.rule_text.toUpperCase().startsWith('RULETA:'));
+    const rouletteRules = rules.filter(r => r.rule_text.toUpperCase().startsWith('RULETA:'));
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -104,27 +107,57 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
                             </button>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto pr-2 space-y-3 mb-6">
+                        <div className="flex-1 overflow-y-auto pr-2 space-y-6 mb-6">
                             {isLoading ? (
                                 <p className="text-center text-gray-500 italic py-4">Cargando reglas...</p>
                             ) : rules.length === 0 ? (
                                 <p className="text-center text-gray-500 italic py-4">No hay reglas registradas aún.</p>
                             ) : (
-                                rules.map((rule, idx) => (
-                                    <div key={rule.id} className="bg-black/5 p-3 rounded border-2 border-black/10 flex justify-between items-start gap-4">
-                                        <div className="flex items-start gap-3">
-                                            <span className="gba-text text-[#306082] text-xl min-w-[24px]">{idx + 1}.</span>
-                                            <p className="text-lg md:text-xl gba-text leading-tight mt-1">{rule.rule_text}</p>
+                                <>
+                                    {generalRules.length > 0 && (
+                                        <div className="space-y-3">
+                                            <h3 className="text-xl md:text-2xl gba-text tracking-widest text-[#2f8f74] border-b-2 border-black/20 pb-1" style={{ textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000' }}>NORMAS GENERALES</h3>
+                                            {generalRules.map((rule, idx) => (
+                                                <div key={rule.id} className="bg-black/5 p-3 rounded border-2 border-black/10 flex justify-between items-start gap-4">
+                                                    <div className="flex items-start gap-3">
+                                                        <span className="gba-text text-[#306082] text-xl min-w-[24px]">{idx + 1}.</span>
+                                                        <p className="text-lg md:text-xl gba-text leading-tight mt-1">{rule.rule_text}</p>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => handleDeleteRule(rule.id)}
+                                                        className="text-red-500 hover:text-red-700 font-bold text-xl px-2 hover:bg-red-100 rounded transition-colors shrink-0"
+                                                        title="Eliminar regla"
+                                                    >
+                                                        X
+                                                    </button>
+                                                </div>
+                                            ))}
                                         </div>
-                                        <button
-                                            onClick={() => handleDeleteRule(rule.id)}
-                                            className="text-red-500 hover:text-red-700 font-bold text-xl px-2 hover:bg-red-100 rounded transition-colors shrink-0"
-                                            title="Eliminar regla"
-                                        >
-                                            X
-                                        </button>
-                                    </div>
-                                ))
+                                    )}
+
+                                    {rouletteRules.length > 0 && (
+                                        <div className="space-y-3 mt-8">
+                                            <h3 className="text-xl md:text-2xl gba-text tracking-widest text-[#2f8f74] border-b-2 border-black/20 pb-1" style={{ textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000' }}>PREMIOS Y CASTIGOS (RULETA)</h3>
+                                            {rouletteRules.map((rule, idx) => (
+                                                <div key={rule.id} className="bg-black/5 p-3 rounded border-2 border-black/10 flex justify-between items-start gap-4">
+                                                    <div className="flex items-start gap-3">
+                                                        <span className="gba-text text-[#306082] text-xl min-w-[24px]">{idx + 1}.</span>
+                                                        <p className="text-lg md:text-xl gba-text leading-tight mt-1">
+                                                            {rule.rule_text.replace(/^RULETA:\s*/i, '')}
+                                                        </p>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => handleDeleteRule(rule.id)}
+                                                        className="text-red-500 hover:text-red-700 font-bold text-xl px-2 hover:bg-red-100 rounded transition-colors shrink-0"
+                                                        title="Eliminar regla"
+                                                    >
+                                                        X
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
 
