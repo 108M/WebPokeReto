@@ -116,7 +116,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
                                 <>
                                     {generalRules.length > 0 && (
                                         <div className="space-y-3">
-                                            <h3 className="text-xl md:text-2xl gba-text tracking-widest text-[#2f8f74] border-b-2 border-black/20 pb-1" style={{ textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000' }}>NORMAS GENERALES</h3>
+                                            <h3 className="text-xl md:text-2xl gba-text tracking-widest text-[#f5c786] border-b-2 border-black/20 pb-1" style={{ textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000' }}>NORMAS GENERALES</h3>
                                             {generalRules.map((rule, idx) => (
                                                 <div key={rule.id} className="bg-black/5 p-3 rounded border-2 border-black/10 flex justify-between items-start gap-4">
                                                     <div className="flex items-start gap-3">
@@ -137,7 +137,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
 
                                     {rouletteRules.length > 0 && (
                                         <div className="space-y-3 mt-8">
-                                            <h3 className="text-xl md:text-2xl gba-text tracking-widest text-[#2f8f74] border-b-2 border-black/20 pb-1" style={{ textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000' }}>PREMIOS Y CASTIGOS (RULETA)</h3>
+                                            <h3 className="text-xl md:text-2xl gba-text tracking-widest text-[#f5c786] border-b-2 border-black/20 pb-1" style={{ textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 0 #000' }}>PREMIOS Y CASTIGOS (RULETA)</h3>
                                             {rouletteRules.map((rule, idx) => (
                                                 <div key={rule.id} className="bg-black/5 p-3 rounded border-2 border-black/10 flex justify-between items-start gap-4">
                                                     <div className="flex items-start gap-3">
