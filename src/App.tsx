@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ProfileCard } from './components/ProfileCard';
 import { Roulette } from './components/Roulette';
+import { RulesModal } from './components/RulesModal';
 import { supabase } from './lib/supabase';
 
 export interface AppEvent {
@@ -32,6 +33,7 @@ export interface UserProfile {
   name: string;
   avatar: string;
   points: number;
+  revives_count: number;
   medals: Medal[];
   events: AppEvent[];
   pokemonTeam: PokemonSlot[];
@@ -49,6 +51,7 @@ function App() {
     localStorage.setItem('appState', appState);
   }, [appState]);
   const [isRouletteOpen, setIsRouletteOpen] = useState(false);
+  const [isRulesOpen, setIsRulesOpen] = useState(false);
   const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -80,7 +83,8 @@ function App() {
         id: p.id,
         name: p.username,
         avatar: p.avatar_url.replace('.png', '.gif'),
-        points: p.total_points,
+        points: pEvents.reduce((sum, ev) => sum + ev.points, 0),
+        revives_count: p.revives_count || 0,
         medals: pBadges,
         events: pEvents,
         pokemonTeam: pTeam
@@ -111,7 +115,7 @@ function App() {
     await supabase.from('badges').update({ is_obtained: !currentObtained }).eq('profile_id', profileId).eq('badge_index', badgeIndex);
   };
 
-  const handleAddEvent = async (profileId: string, newEvent: Omit<AppEvent, 'id'>, currentPoints: number) => {
+  const handleAddEvent = async (profileId: string, newEvent: Omit<AppEvent, 'id'>) => {
     const tempId = Date.now().toString();
     setProfiles(prev => prev.map(p => p.id === profileId ? {
       ...p,
@@ -120,17 +124,15 @@ function App() {
     } : p));
 
     await supabase.from('events').insert({ profile_id: profileId, type: newEvent.type, points_change: newEvent.points, description: newEvent.desc, event_date: newEvent.date });
-    await supabase.from('profiles').update({ total_points: currentPoints + newEvent.points }).eq('id', profileId);
   };
 
-  const handleDeleteEvent = async (profileId: string, eventId: string, pointsToRevert: number, currentPoints: number) => {
+  const handleDeleteEvent = async (profileId: string, eventId: string, pointsToRevert: number) => {
     setProfiles(prev => prev.map(p => p.id === profileId ? {
       ...p,
       events: p.events.filter(e => e.id !== eventId),
       points: p.points - pointsToRevert
     } : p));
     await supabase.from('events').delete().eq('id', eventId);
-    await supabase.from('profiles').update({ total_points: currentPoints - pointsToRevert }).eq('id', profileId);
   };
 
   const handleAddPokemon = async (profileId: string, slotIndex: number, pokemonName: string, spriteUrl: string) => {
@@ -155,6 +157,22 @@ function App() {
     } : p));
 
     await supabase.from('pokemon_team').delete().eq('profile_id', profileId).eq('slot_index', slotIndex);
+  };
+
+  const handleUpdateRevives = async (profileId: string, change: number) => {
+    // 1. Find current
+    const profile = profiles.find(p => p.id === profileId);
+    if (!profile) return;
+    const newCount = Math.max(0, profile.revives_count + change); // Prevent negative revives
+
+    // 2. Optimistic UI update
+    setProfiles(prev => prev.map(p => p.id === profileId ? {
+      ...p,
+      revives_count: newCount
+    } : p));
+
+    // 3. Database update
+    await supabase.from('profiles').update({ revives_count: newCount }).eq('id', profileId);
   };
 
 
@@ -321,19 +339,28 @@ function App() {
                   </div>
                 </div>
 
-                <div className="static md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 flex flex-row md:flex-col gap-2 md:gap-4 z-10 mt-4 md:mt-0 justify-center w-full md:w-auto">
+                <div className="static md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 flex flex-row gap-2 md:gap-4 z-10 mt-4 md:mt-0 justify-center w-full md:w-auto items-stretch">
                   <button
-                    onClick={() => setIsRouletteOpen(true)}
-                    className="gba-button-blue text-sm md:text-xl px-4 py-2"
+                    onClick={() => setIsRulesOpen(true)}
+                    className="hover:scale-110 transition-transform flex items-center justify-center shrink-0 cursor-pointer"
+                    title="Reglas del Reto"
                   >
-                    RULETA Z
+                    <img src="/reglas.png" alt="Reglas" className="h-[90px] md:h-[110px] w-auto filter drop-shadow-[2px_2px_0_rgba(0,0,0,1)] object-contain" />
                   </button>
-                  <button
-                    onClick={() => setAppState('startMenu')}
-                    className="gba-button text-sm md:text-xl px-4 py-2"
-                  >
-                    SALIR
-                  </button>
+                  <div className="flex flex-row md:flex-col gap-2 md:gap-4 shrink-0">
+                    <button
+                      onClick={() => setIsRouletteOpen(true)}
+                      className="gba-button-blue text-sm md:text-xl px-4 py-2"
+                    >
+                      RULETA Z
+                    </button>
+                    <button
+                      onClick={() => setAppState('startMenu')}
+                      className="gba-button text-sm md:text-xl px-4 py-2 w-full"
+                    >
+                      SALIR
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -348,6 +375,7 @@ function App() {
                     onDeleteEvent={handleDeleteEvent}
                     onAddPokemon={handleAddPokemon}
                     onRemovePokemon={handleRemovePokemon}
+                    onUpdateRevives={handleUpdateRevives}
                   />
                 ))}
               </div>
@@ -355,6 +383,10 @@ function App() {
                 isOpen={isRouletteOpen}
                 onClose={() => setIsRouletteOpen(false)}
                 onResult={handleRouletteResult}
+              />
+              <RulesModal
+                isOpen={isRulesOpen}
+                onClose={() => setIsRulesOpen(false)}
               />
             </motion.div>
           )}

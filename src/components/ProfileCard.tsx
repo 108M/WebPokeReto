@@ -9,10 +9,11 @@ interface ProfileCardProps {
     profile: UserProfile;
     isLeading: boolean;
     onToggleMedal: (profileId: string, badgeIndex: number, currentObtained: boolean) => void;
-    onAddEvent: (profileId: string, newEvent: Omit<AppEvent, 'id'>, currentPoints: number) => void;
-    onDeleteEvent: (profileId: string, eventId: string, pointsToRevert: number, currentPoints: number) => void;
+    onAddEvent: (profileId: string, newEvent: Omit<AppEvent, 'id'>) => void;
+    onDeleteEvent: (profileId: string, eventId: string, pointsToRevert: number) => void;
     onAddPokemon: (profileId: string, slotIndex: number, pokemonName: string, spriteUrl: string) => void;
     onRemovePokemon: (profileId: string, slotIndex: number) => void;
+    onUpdateRevives: (profileId: string, change: number) => void;
 }
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({
@@ -22,7 +23,8 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
     onAddEvent,
     onDeleteEvent,
     onAddPokemon,
-    onRemovePokemon
+    onRemovePokemon,
+    onUpdateRevives
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
@@ -35,7 +37,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             desc: eventDetails.description,
             points: eventDetails.points,
             date: new Date().toISOString().split('T')[0]
-        }, profile.points);
+        });
     };
 
     const toggleMedal = (idx: number) => {
@@ -64,7 +66,35 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                         />
                         <div className="flex-1">
                             <h3 className="text-xl md:text-3xl gba-text mb-0 md:mb-1">{profile.name} {isLeading && '👑'}</h3>
-                            <p className="text-lg md:text-xl gba-text text-[#306082] mt-0">{profile.points} PTS</p>
+                            <div className="flex items-center gap-4 mt-0">
+                                <p className="text-lg md:text-xl gba-text text-[#306082] mt-0 mb-0">{profile.points} PTS</p>
+                                
+                                {/* Revives Counter */}
+                                <div 
+                                    className="flex items-center gap-1"
+                                    onClick={(e) => e.stopPropagation()} /* Prevent opening history modal when clicking counter */
+                                >
+                                    <img src="/revivir.png" alt="Revivir" className="w-4 h-4 md:w-5 md:h-5 object-contain filter drop-shadow-[1px_1px_0_rgba(0,0,0,0.5)]" />
+                                    <span className="text-base md:text-lg font-bold gba-text text-[#306082] leading-none mt-1">x{profile.revives_count}</span>
+                                    <div className="flex flex-col gap-[1px] ml-1">
+                                        <button 
+                                            onClick={() => onUpdateRevives(profile.id, 1)}
+                                            className="w-3.5 h-3.5 md:w-4 md:h-4 bg-green-500 hover:bg-green-400 border border-black rounded-sm flex items-center justify-center text-white font-bold leading-none text-[10px]"
+                                            title="Sumar Revivir"
+                                        >
+                                            +
+                                        </button>
+                                        <button 
+                                            onClick={() => onUpdateRevives(profile.id, -1)}
+                                            disabled={profile.revives_count <= 0}
+                                            className="w-3.5 h-3.5 md:w-4 md:h-4 bg-gray-300 hover:bg-gray-200 disabled:opacity-50 border border-black rounded-sm flex items-center justify-center text-black font-bold leading-none text-[12px]"
+                                            title="Restar Revivir"
+                                        >
+                                            -
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
                             {/* Active Effects / Ventajas Display */}
                             <div className="flex gap-2 mt-2 flex-wrap items-center">
@@ -79,7 +109,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                                         >
                                             {effect.desc}
                                             <button
-                                                onClick={(e) => { e.stopPropagation(); onDeleteEvent(profile.id, effect.id, effect.points, profile.points); }}
+                                                onClick={(e) => { e.stopPropagation(); onDeleteEvent(profile.id, effect.id, effect.points); }}
                                                 className="ml-1 hover:text-black hover:scale-125 transition-transform"
                                                 title="Eliminar ventaja/desventaja"
                                             >
@@ -182,10 +212,10 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                 playerName={profile.name}
                 events={profile.events}
                 onAddEvent={(newEvent: Omit<AppEvent, 'id'>) => {
-                    onAddEvent(profile.id, newEvent, profile.points);
+                    onAddEvent(profile.id, newEvent);
                 }}
                 onDeleteEvent={(eventId: string, pointsToRevert: number) => {
-                    onDeleteEvent(profile.id, eventId, pointsToRevert, profile.points);
+                    onDeleteEvent(profile.id, eventId, pointsToRevert);
                 }}
             />
 

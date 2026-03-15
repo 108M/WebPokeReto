@@ -9,7 +9,6 @@ interface EventModalProps {
 
 const EVENT_TYPES = [
     { id: 'Muerte', name: 'Muerte de Pokémon (-10)', points: -10 },
-    { id: 'Medalla', name: 'Medalla Conseguida (+20)', points: 20 },
     { id: 'Ventaja', name: 'Ventaja Manual', points: 0 },
     { id: 'Desventaja', name: 'Desventaja Manual', points: 0 },
     { id: 'Otros', name: 'Otros (Personalizado)', points: 0 },
@@ -23,7 +22,7 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSubmi
         e.preventDefault();
         onSubmit({
             type: selectedEvent.id,
-            points: selectedEvent.points,
+            points: parseInt(selectedEvent.points?.toString() || "0") || 0,
             description
         });
         setDescription('');
@@ -82,7 +81,7 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSubmi
                                 <input
                                     type="number"
                                     value={selectedEvent.points}
-                                    onChange={(e) => setSelectedEvent({ ...selectedEvent, points: parseInt(e.target.value) || 0 })}
+                                    onChange={(e) => setSelectedEvent({ ...selectedEvent, points: e.target.value as any })}
                                     className="p-1 sm:p-2 border-4 border-[#a0a0a0] bg-white rounded font-[var(--font-gba)] text-lg sm:text-xl gba-text focus:outline-none focus:border-[#3080c0]"
                                 />
                             </div>

@@ -14,18 +14,19 @@ interface EventHistoryModalProps {
 export const EventHistoryModal: React.FC<EventHistoryModalProps> = ({ isOpen, onClose, playerName, events, onAddEvent, onDeleteEvent }) => {
     const [newType, setNewType] = useState('Ventaja');
     const [newDesc, setNewDesc] = useState('');
-    const [newPoints, setNewPoints] = useState(0);
+    const [newPoints, setNewPoints] = useState<number | string>(0);
 
     const handleAdd = (e: React.FormEvent) => {
         e.preventDefault();
         onAddEvent({
             type: newType,
             desc: newDesc,
-            points: newPoints,
+            points: parseInt(newPoints.toString()) || 0,
             date: new Date().toISOString().split('T')[0]
         });
         setNewDesc('');
         setNewPoints(0);
+        setNewType('Ventaja');
     };
     return (
         <AnimatePresence>
@@ -104,7 +105,7 @@ export const EventHistoryModal: React.FC<EventHistoryModalProps> = ({ isOpen, on
                             </div>
                             <div className="flex-1 w-full sm:w-24">
                                 <label className="block text-sm font-bold text-gray-700 mb-1">Puntos</label>
-                                <input type="number" className="w-full p-2 border-2 border-gray-400 rounded focus:border-blue-500 outline-none" value={newPoints} onChange={e => setNewPoints(parseInt(e.target.value) || 0)} />
+                                <input type="number" className="w-full p-2 border-2 border-gray-400 rounded focus:border-blue-500 outline-none" value={newPoints} onChange={e => setNewPoints(e.target.value)} />
                             </div>
                             <button type="submit" className="gba-button text-sm px-4 py-2 w-full sm:w-auto mt-2 sm:mt-0 sm:self-end sm:mb-[2px]">
                                 AÑADIR
