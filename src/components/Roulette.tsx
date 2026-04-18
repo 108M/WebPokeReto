@@ -37,7 +37,6 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
     const [result, setResult] = useState<RouletteEffect | null>(null);
     const [effects, setEffects] = useState<RouletteEffect[]>([]);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     
     // Result details
     const [resultSprite, setResultSprite] = useState<string | null>(null);
@@ -92,7 +91,6 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
     }, [result]);
 
     const fetchEffects = async () => {
-        setIsLoading(true);
         const { data, error } = await supabase.from('rules').select('*').order('created_at', { ascending: true });
 
         if (!error && data) {
@@ -118,7 +116,6 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
             if (parsedEffects.length === 0) await seedDefaults();
             else setEffects(parsedEffects);
         }
-        setIsLoading(false);
     };
 
     const seedDefaults = async () => {
@@ -207,7 +204,7 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
         }).join(', ');
     })()})`;
 
-    const openItemCombo = (currentValue: string, cb: (v: string) => void) => {
+    const openItemCombo = (cb: (v: string) => void) => {
         setPickerCb(() => cb);
         setPickerSearch('');
         setPickerOpen(true);
@@ -319,7 +316,7 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
                                                     <input type="color" value={editForm.color} onChange={e => setEditForm({...editForm, color: e.target.value})} className="w-12 h-10 p-0 cursor-pointer rounded" />
                                                 </div>
                                                 <div className="flex gap-3">
-                                                    <button type="button" onClick={() => openItemCombo(editForm.apiItem || '', (v) => setEditForm({...editForm, apiItem: v}))} className="flex-1 flex items-center justify-start gap-2 p-2 border-2 border-green-500 bg-white rounded font-[var(--font-gba)] text-sm text-gray-600 overflow-hidden">
+                                                    <button type="button" onClick={() => openItemCombo((v) => setEditForm({...editForm, apiItem: v}))} className="flex-1 flex items-center justify-start gap-2 p-2 border-2 border-green-500 bg-white rounded font-[var(--font-gba)] text-sm text-gray-600 overflow-hidden">
                                                         {editForm.apiItem ? (
                                                             <><img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${editForm.apiItem.toLowerCase()}.png`} className="w-6 h-6 pixelated" alt="icon"/> <span className="truncate">{editForm.apiItem}</span></>
                                                         ) : (
@@ -358,7 +355,7 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
                                     <input required type="color" value={newColor} onChange={e => setNewColor(e.target.value)} className="w-12 h-10 p-0 rounded" />
                                 </div>
                                 <div className="flex gap-3">
-                                    <button type="button" onClick={() => openItemCombo(newApiItem, setNewApiItem)} className="w-1/3 md:w-1/4 flex items-center justify-start gap-2 p-2 border-2 border-gray-400 bg-white rounded font-[var(--font-gba)] text-sm text-gray-600 overflow-hidden">
+                                    <button type="button" onClick={() => openItemCombo(setNewApiItem)} className="w-1/3 md:w-1/4 flex items-center justify-start gap-2 p-2 border-2 border-gray-400 bg-white rounded font-[var(--font-gba)] text-sm text-gray-600 overflow-hidden">
                                         {newApiItem ? (
                                             <><img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${newApiItem.toLowerCase()}.png`} className="w-6 h-6 pixelated" alt="icon"/> <span className="truncate">{newApiItem}</span></>
                                         ) : (
