@@ -394,11 +394,11 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
                                                 <button 
                                                     key={item} type="button" 
                                                     onClick={() => { pickerCb?.(item); setPickerOpen(false); }} 
-                                                    className="flex flex-col items-center justify-center p-2 sm:p-3 bg-white hover:bg-blue-100 rounded border border-gray-300 transition-colors aspect-square overflow-hidden" title={item}
+                                                    className="flex flex-col items-center justify-center p-2 sm:p-3 bg-white hover:bg-blue-100 rounded border border-gray-300 transition-colors w-full h-full text-center" title={item}
                                                 >
                                                     <img 
                                                         src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item}.png`} 
-                                                        className="w-10 h-10 sm:w-16 sm:h-16 object-contain pixelated relative shrink-0" 
+                                                        className="w-12 h-12 sm:w-16 sm:h-16 object-contain pixelated relative shrink-0 mx-auto" 
                                                         loading="lazy" 
                                                         alt={item} 
                                                         onError={(e) => {
