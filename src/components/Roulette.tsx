@@ -310,21 +310,25 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
                                     <div key={eff.id} className="bg-black/5 p-2 rounded border-2 border-black/10 flex flex-col gap-2 relative">
                                         {editingId === eff.id ? (
                                             <div className="flex flex-col gap-3">
-                                                <div className="flex gap-3">
-                                                    <input value={editForm.label} onChange={e => setEditForm({...editForm, label: e.target.value})} className="flex-1 p-2 border-2 border-green-500 rounded font-[var(--font-gba)] text-base" placeholder="Título corto" />
-                                                    <input type="number" value={editForm.chance} onChange={e => setEditForm({...editForm, chance: Number(e.target.value)})} className="w-20 p-2 border-2 border-green-500 rounded font-[var(--font-gba)] text-base" placeholder="%" />
-                                                    <input type="color" value={editForm.color} onChange={e => setEditForm({...editForm, color: e.target.value})} className="w-12 h-10 p-0 cursor-pointer rounded" />
+                                                <div className="flex flex-col sm:flex-row gap-3">
+                                                    <input value={editForm.label} onChange={e => setEditForm({...editForm, label: e.target.value})} className="flex-1 w-full p-2 border-2 border-green-500 rounded font-[var(--font-gba)] text-base" placeholder="Título corto" />
+                                                    <div className="flex gap-3">
+                                                        <input type="number" value={editForm.chance} onChange={e => setEditForm({...editForm, chance: Number(e.target.value)})} className="w-24 p-2 border-2 border-green-500 rounded font-[var(--font-gba)] text-base" placeholder="%" />
+                                                        <input type="color" value={editForm.color} onChange={e => setEditForm({...editForm, color: e.target.value})} className="w-14 h-11 p-0 cursor-pointer rounded" />
+                                                    </div>
                                                 </div>
-                                                <div className="flex gap-3">
-                                                    <button type="button" onClick={() => openItemCombo((v) => setEditForm({...editForm, apiItem: v}))} className="flex-1 flex items-center justify-start gap-2 p-2 border-2 border-green-500 bg-white rounded font-[var(--font-gba)] text-sm text-gray-600 overflow-hidden">
+                                                <div className="flex flex-col sm:flex-row gap-3">
+                                                    <button type="button" onClick={() => openItemCombo((v) => setEditForm({...editForm, apiItem: v}))} className="flex-1 w-full flex items-center justify-start gap-2 p-2 border-2 border-green-500 bg-white rounded font-[var(--font-gba)] text-sm text-gray-600 overflow-hidden">
                                                         {editForm.apiItem ? (
                                                             <><img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${editForm.apiItem.toLowerCase()}.png`} className="w-6 h-6 pixelated" alt="icon"/> <span className="truncate">{editForm.apiItem}</span></>
                                                         ) : (
                                                             <><div className="w-6 h-6 bg-gray-200 rounded-full shrink-0" /> <span className="truncate">Elegir ícono Pokémon...</span></>
                                                         )}
                                                     </button>
-                                                    <button onClick={() => saveEdit(eff.id)} className="gba-button !py-2 !px-4 !bg-green-500 !text-sm">OK</button>
-                                                    <button onClick={() => setEditingId(null)} className="gba-button !py-2 !px-4 !text-sm">X</button>
+                                                    <div className="flex gap-2 w-full sm:w-auto">
+                                                        <button onClick={() => saveEdit(eff.id)} className="gba-button flex-1 sm:flex-none !py-2 !px-4 !bg-green-500 !text-sm">OK</button>
+                                                        <button onClick={() => setEditingId(null)} className="gba-button flex-1 sm:flex-none !py-2 !px-4 !text-sm">X</button>
+                                                    </div>
                                                 </div>
                                                 <textarea value={editForm.description} onChange={e => setEditForm({...editForm, description: e.target.value})} className="w-full p-2 border-2 border-green-500 rounded font-[var(--font-gba)] text-sm min-h-[60px]" placeholder="Explicación detallada de la regla..." />
                                             </div>
@@ -349,20 +353,22 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
                             </div>
 
                             <form onSubmit={handleAddEffect} className="bg-[#e0e0e0] p-3 rounded border-4 border-[#c0c0c0] flex flex-col gap-3 shrink-0">
-                                <div className="flex gap-3">
-                                    <input required type="text" placeholder="Título corto" value={newLabel} onChange={e => setNewLabel(e.target.value)} className="flex-1 p-2 border-2 border-gray-400 rounded text-base font-[var(--font-gba)]" />
-                                    <input required type="number" min="1" placeholder="%" value={newChance} onChange={e => setNewChance(Number(e.target.value))} className="w-20 p-2 border-2 border-gray-400 rounded text-base font-[var(--font-gba)]" />
-                                    <input required type="color" value={newColor} onChange={e => setNewColor(e.target.value)} className="w-12 h-10 p-0 rounded" />
+                                <div className="flex flex-col sm:flex-row gap-3">
+                                    <input required type="text" placeholder="Título corto" value={newLabel} onChange={e => setNewLabel(e.target.value)} className="flex-1 w-full p-2 border-2 border-gray-400 rounded text-base font-[var(--font-gba)]" />
+                                    <div className="flex gap-3">
+                                        <input required type="number" min="1" placeholder="%" value={newChance} onChange={e => setNewChance(Number(e.target.value))} className="w-24 p-2 border-2 border-gray-400 rounded text-base font-[var(--font-gba)]" />
+                                        <input required type="color" value={newColor} onChange={e => setNewColor(e.target.value)} className="w-14 h-11 p-0 rounded" />
+                                    </div>
                                 </div>
-                                <div className="flex gap-3">
-                                    <button type="button" onClick={() => openItemCombo(setNewApiItem)} className="w-1/3 md:w-1/4 flex items-center justify-start gap-2 p-2 border-2 border-gray-400 bg-white rounded font-[var(--font-gba)] text-sm text-gray-600 overflow-hidden">
+                                <div className="flex flex-col sm:flex-row gap-3">
+                                    <button type="button" onClick={() => openItemCombo(setNewApiItem)} className="w-full sm:w-1/3 md:w-1/4 flex items-center justify-start gap-2 p-2 border-2 border-gray-400 bg-white rounded font-[var(--font-gba)] text-sm text-gray-600 overflow-hidden">
                                         {newApiItem ? (
                                             <><img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${newApiItem.toLowerCase()}.png`} className="w-6 h-6 pixelated" alt="icon"/> <span className="truncate">{newApiItem}</span></>
                                         ) : (
                                             <><div className="w-6 h-6 bg-gray-200 rounded-full shrink-0" /> <span className="truncate">Buscar Icono...</span></>
                                         )}
                                     </button>
-                                    <input type="text" placeholder="Descripción detallada" value={newDescription} onChange={e => setNewDescription(e.target.value)} className="flex-1 p-2 border-2 border-gray-400 rounded text-sm font-[var(--font-gba)]" />
+                                    <input type="text" placeholder="Descripción detallada" value={newDescription} onChange={e => setNewDescription(e.target.value)} className="flex-1 w-full p-2 border-2 border-gray-400 rounded text-sm font-[var(--font-gba)]" />
                                 </div>
                                 <button type="submit" className="gba-button text-sm py-2 mt-2">AÑADIR A LA RULETA</button>
                             </form>
@@ -380,19 +386,19 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
                                             value={pickerSearch} onChange={e => setPickerSearch(e.target.value)} 
                                             className="w-full p-3 border-2 border-gray-300 rounded mb-3 text-base outline-none focus:border-blue-500" 
                                         />
-                                        <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 overflow-y-auto bg-gray-100 p-4 rounded border border-gray-200" style={{ maxHeight: '60vh' }}>
-                                            <button type="button" onClick={() => { pickerCb?.(''); setPickerOpen(false); }} className="col-span-4 md:col-span-5 lg:col-span-6 p-2 text-sm font-bold text-gray-600 border border-gray-300 rounded bg-white hover:bg-gray-200 mb-2">
+                                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 overflow-y-auto bg-gray-100 p-4 rounded border border-gray-200" style={{ maxHeight: '60vh' }}>
+                                            <button type="button" onClick={() => { pickerCb?.(''); setPickerOpen(false); }} className="col-span-3 sm:col-span-4 md:col-span-5 lg:col-span-6 p-2 text-sm font-bold text-gray-600 border border-gray-300 rounded bg-white hover:bg-gray-200 mb-2">
                                                 LIMPIAR SELECCIÓN
                                             </button>
                                             {availableItems.filter(i => i.includes(pickerSearch.toLowerCase())).map(item => (
                                                 <button 
                                                     key={item} type="button" 
                                                     onClick={() => { pickerCb?.(item); setPickerOpen(false); }} 
-                                                    className="flex flex-col items-center justify-center p-3 bg-white hover:bg-blue-100 rounded border border-gray-300 transition-colors aspect-square" title={item}
+                                                    className="flex flex-col items-center justify-center p-2 sm:p-3 bg-white hover:bg-blue-100 rounded border border-gray-300 transition-colors aspect-square overflow-hidden" title={item}
                                                 >
                                                     <img 
                                                         src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item}.png`} 
-                                                        className="w-16 h-16 object-contain pixelated relative" 
+                                                        className="w-10 h-10 sm:w-16 sm:h-16 object-contain pixelated relative shrink-0" 
                                                         loading="lazy" 
                                                         alt={item} 
                                                         onError={(e) => {
@@ -402,7 +408,7 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
                                                             }
                                                         }}
                                                     />
-                                                    <span className="text-xs font-medium text-gray-600 mt-2 truncate w-full text-center">{item}</span>
+                                                    <span className="hidden sm:block text-xs font-medium text-gray-600 mt-2 truncate w-full text-center">{item}</span>
                                                 </button>
                                             ))}
                                         </div>
