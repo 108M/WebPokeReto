@@ -113,3 +113,16 @@ create policy "Allow public update" on public.rules for update using (true);
 create policy "Allow public delete" on public.events for delete using (true);
 create policy "Allow public delete" on public.active_effects for delete using (true);
 create policy "Allow public delete" on public.rules for delete using (true);
+
+-- ENABLE REPLICATION FOR REAL-TIME
+-- By default, PostgreSQL doesn't broadcast changes to these tables.
+-- We must add them to the supabase_realtime publication.
+alter publication supabase_realtime add table 
+  profiles, 
+  badges, 
+  dead_pokemon, 
+  events, 
+  active_effects, 
+  roulette_logs, 
+  pokemon_team, 
+  rules;
