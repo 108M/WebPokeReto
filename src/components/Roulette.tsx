@@ -162,25 +162,49 @@ export const Roulette: React.FC<RouletteProps> = ({ isOpen, onClose, onResult })
         await supabase.from('rules').update({ rule_text: 'RULETA_JSON:' + JSON.stringify(effectData) }).eq('id', id);
     };
 
-    const spinRoulette = () => {
+    const spinRoulette = async () => {
         if (isSpinning || effects.length === 0) return;
         setIsSpinning(true); setResult(null); setShowDetails(false);
 
         const totalChance = effects.reduce((acc, curr) => acc + curr.chance, 0);
-        const randomBuffer = new Uint32Array(1);
-        window.crypto.getRandomValues(randomBuffer);
-        const rand = (randomBuffer[0] / (0xffffffff + 1)) * totalChance;
-        
-        let cum = 0, selected = effects[0], startCum = 0;
-        for (const effect of effects) {
-            startCum = cum; cum += effect.chance;
-            if (rand < cum) { selected = effect; break; }
+        let selected = effects[0];
+        let stopAngle = 0;
+
+        let isLucky = false;
+        try {
+            const resp = await fetch('/api/lucky');
+            const data = await resp.json();
+            isLucky = data.lucky === true;
+        } catch {}
+
+        const capturaLibre = effects.find(e => e.label === 'CAPTURA LIBRE');
+
+        if (isLucky && capturaLibre) {
+            selected = capturaLibre;
+            let startCum = 0;
+            for (const effect of effects) {
+                if (effect.id === capturaLibre.id) break;
+                startCum += effect.chance;
+            }
+            const midPercent = ((startCum + capturaLibre.chance / 2) / totalChance) * 100;
+            stopAngle = 360 - (midPercent * 3.6);
+        } else {
+            const randomBuffer = new Uint32Array(1);
+            window.crypto.getRandomValues(randomBuffer);
+            const rand = (randomBuffer[0] / (0xffffffff + 1)) * totalChance;
+
+            let cum = 0, startCum = 0;
+            selected = effects[0];
+            for (const effect of effects) {
+                startCum = cum; cum += effect.chance;
+                if (rand < cum) { selected = effect; break; }
+            }
+            const startPercent = (startCum / totalChance) * 100;
+            const endPercent = (cum / totalChance) * 100;
+            const randomPointPercent = startPercent + (Math.random() * (endPercent - startPercent));
+            stopAngle = 360 - (randomPointPercent * 3.6);
         }
 
-        const startPercent = (startCum / totalChance) * 100;
-        const endPercent = (cum / totalChance) * 100;
-        const randomPointPercent = startPercent + (Math.random() * (endPercent - startPercent));
-        const stopAngle = 360 - (randomPointPercent * 3.6);
         const baseRotation = Math.floor(currentRotation / 360) * 360;
         setCurrentRotation(baseRotation + (360 * 8) + stopAngle);
 
